@@ -1,4 +1,4 @@
-module github.com/bjk543/golib v0.0.1
+module github.com/bjk543/golib
 
 go 1.14
 
