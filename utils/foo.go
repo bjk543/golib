@@ -2,6 +2,7 @@ package utils
 
 import (
 	"crypto/tls"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -26,7 +27,7 @@ func HttpGetProxy(urlStr, proxy string) string {
 	}
 
 	client := &http.Client{
-		Timeout:   2 * time.Second,
+		Timeout:   5 * time.Second,
 		Transport: transport,
 	}
 
@@ -48,10 +49,11 @@ func HttpGetProxy(urlStr, proxy string) string {
 		if err == nil {
 			body, err := ioutil.ReadAll(res.Body)
 			if err != nil {
-				print(err)
+				fmt.Println(err)
 				return ""
 			}
 			defer res.Body.Close()
+			fmt.Println(string(body))
 			return string(body)
 		}
 		if retries < 0 {
