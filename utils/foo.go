@@ -5,21 +5,77 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"net/url"
 	"os"
-	"strings"
 	"time"
 )
+
+func HttpGetProxy(urlStr, proxy string) string {
+
+	up, err := url.Parse(proxy)
+	if err != nil {
+		log.Println(err)
+	}
+
+	transport := &http.Transport{
+		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+	}
+
+	if len(proxy) > 0 {
+		transport.Proxy = http.ProxyURL(up)
+	}
+
+	client := &http.Client{
+		Timeout:   2 * time.Second,
+		Transport: transport,
+	}
+
+	url, err := url.Parse(urlStr)
+	if err != nil {
+		log.Println(err)
+		return ""
+	}
+	req, err := http.NewRequest("GET", url.String(), nil)
+	if err != nil {
+		log.Println(err)
+		return ""
+	}
+	req.Header.Set("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.86 Safari/537.36")
+
+	retries := 5
+	res, err := client.Do(req)
+	for {
+		if err == nil {
+			body, err := ioutil.ReadAll(res.Body)
+			if err != nil {
+				print(err)
+				return ""
+			}
+			return string(body)
+		}
+		if retries < 0 {
+			return ""
+		}
+		retries--
+		log.Println("retries", retries)
+
+		res, err = client.Do(req)
+	}
+
+	return ""
+}
 
 func HttpGet(url string) string {
 
 	req, e := http.NewRequest("GET", url, nil)
+	req.Header.Set("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.86 Safari/537.36")
 	if e != nil {
 		return "nil, e"
 	}
 
 	client := http.Client{Timeout: 2 * time.Second}
 
-	retries := 15
+	retries := 5
 	res, err := client.Do(req)
 	for {
 		if err == nil || retries < 0 {
@@ -37,20 +93,6 @@ func HttpGet(url string) string {
 	}
 	// WriteFile("body.html", string(body))
 	return string(body)
-}
-
-func GetKeyWord(ss, l, r string) string {
-
-	a := strings.Index(ss, l)
-	if a < 0 {
-		return ""
-	}
-	ss = ss[a:]
-	b := strings.Index(ss, r)
-	if b < 0 {
-		return ""
-	}
-	return ss[len(l):b]
 }
 
 func HttpGet2(url string, querys map[string]string) (*http.Response, error) {
@@ -82,13 +124,6 @@ func HttpGet2(url string, querys map[string]string) (*http.Response, error) {
 	if err != nil {
 		log.Fatal(err)
 	}
-
-	// body, err := ioutil.ReadAll(resp.Body)
-	// if err != nil {
-	// 	print(err)
-	// }
-	// WriteFile("body.html", string(body))
-
 	return resp, err
 }
 
@@ -134,9 +169,9 @@ func HttpGetUrlInfo(url string) string {
 		Timeout: timeout,
 		Transport: &http.Transport{
 			TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+			// Proxy:           http.ProxyURL(proxyUrl),
 		},
 	}
-
 	var resp *http.Response
 	retires := 10
 	for {
@@ -162,21 +197,4 @@ func HttpGetUrlInfo(url string) string {
 	}
 	return string(body)
 
-}
-
-func GetMapKeys(mymap map[string]bool) []string {
-	keys := make([]string, 0, len(mymap))
-	for k := range mymap {
-		keys = append(keys, k)
-	}
-	return keys
-}
-
-func HasKey(s string, ss []string) bool {
-	for _, v := range ss {
-		if strings.Contains(s, v) {
-			return true
-		}
-	}
-	return false
 }
