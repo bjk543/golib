@@ -51,6 +51,7 @@ func HttpGetProxy(urlStr, proxy string) string {
 				print(err)
 				return ""
 			}
+			defer res.Body.Close()
 			return string(body)
 		}
 		if retries < 0 {
@@ -66,33 +67,7 @@ func HttpGetProxy(urlStr, proxy string) string {
 }
 
 func HttpGet(url string) string {
-
-	req, e := http.NewRequest("GET", url, nil)
-	req.Header.Set("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.86 Safari/537.36")
-	if e != nil {
-		return "nil, e"
-	}
-
-	client := http.Client{Timeout: 2 * time.Second}
-
-	retries := 5
-	res, err := client.Do(req)
-	for {
-		if err == nil || retries < 0 {
-			break
-		}
-		retries--
-		log.Println("retries", retries)
-
-		res, err = client.Do(req)
-	}
-
-	body, err := ioutil.ReadAll(res.Body)
-	if err != nil {
-		print(err)
-	}
-	// WriteFile("body.html", string(body))
-	return string(body)
+	return HttpGetProxy(url, "")
 }
 
 func HttpGet2(url string, querys map[string]string) (*http.Response, error) {
@@ -124,6 +99,7 @@ func HttpGet2(url string, querys map[string]string) (*http.Response, error) {
 	if err != nil {
 		log.Fatal(err)
 	}
+	defer resp.Body.Close()
 	return resp, err
 }
 
@@ -154,47 +130,4 @@ func HttpPost(resp *http.Response, url string) string {
 	}
 	// WriteFile("body.html", string(body))
 	return string(body)
-}
-
-func HttpGetUrlInfo(url string) string {
-	req, err := http.NewRequest("GET", url, nil)
-	req.Header.Set("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.86 Safari/537.36")
-	if err != nil {
-		log.Print(err)
-		os.Exit(1)
-	}
-
-	timeout := time.Duration(10 * time.Second) //超时时间50ms
-	client := &http.Client{
-		Timeout: timeout,
-		Transport: &http.Transport{
-			TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
-			// Proxy:           http.ProxyURL(proxyUrl),
-		},
-	}
-	var resp *http.Response
-	retires := 10
-	for {
-		resp, err = client.Do(req)
-		if err == nil || retires == 0 {
-			break
-		}
-		retires--
-	}
-
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	defer resp.Body.Close()
-	if err != nil {
-		print(err)
-	}
-
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		print(err)
-	}
-	return string(body)
-
 }
