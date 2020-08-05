@@ -53,7 +53,6 @@ func HttpGetProxy(urlStr, proxy string) string {
 				return ""
 			}
 			defer res.Body.Close()
-			fmt.Println(string(body))
 			return string(body)
 		}
 		if retries < 0 {
