@@ -32,3 +32,14 @@ func GetKeyWord(ss, l, r string) string {
 	}
 	return ss[len(l):b]
 }
+
+func StringArrayToString(s []string) string {
+	ss := ""
+	for _, s1 := range s {
+		if len(strings.TrimSpace(s1)) == 0 {
+			continue
+		}
+		ss = ss + s1 + "\n"
+	}
+	return ss
+}
