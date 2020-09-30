@@ -28,39 +28,24 @@ func getPayloadTG(id int, text string) []string {
 	if len(text) > textLen {
 		i := 1
 		for ; i*textLen < len(text); i++ {
-			ss = append(ss, fmt.Sprintf(`{
-				"chat_id": %d,
-				"text": "%s"
-			}`, id, text[(i-1)*textLen:i*textLen]))
+			ss = append(ss, fmt.Sprintf(`{"chat_id": %d,"text": "%s"}`, id, text[(i-1)*textLen:i*textLen]))
 		}
-		ss = append(ss, fmt.Sprintf(`{
-			"chat_id": %d,
-			"text": "%s"
-		}`, id, text[(i-1)*textLen:]))
+		ss = append(ss, fmt.Sprintf(`{"chat_id": %d,"text": "%s"}`, id, text[(i-1)*textLen:]))
 	} else {
-		ss = append(ss, fmt.Sprintf(`{
-			"chat_id": %d,
-			"text": "%s"
-		}`, id, text))
+		ss = append(ss, fmt.Sprintf(`{"chat_id": %d,"text": "%s"}`, id, text))
 	}
 
 	return ss
 }
 func getPayloadTG2(id int, text string) string {
-	return fmt.Sprintf(`{
-		"chat_id": %d,
-		"text": "%s"
-	}`, id, text)
+	return fmt.Sprintf(`{"chat_id": %d,"text": "%s"}`, id, text)
 }
 func getPayloadMM(id string, text string) string {
 	textLen := 16380
 	if len(text) > textLen {
 		text = string([]rune(text)[:textLen])
 	}
-	return fmt.Sprintf(`{
-		"channel": "%s",
-		"text": "%s"
-	}`, id, text)
+	return fmt.Sprintf(`{"channel": "%s","text": "%s"}`, id, text)
 }
 
 func post(url string, text string) error {
