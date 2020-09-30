@@ -37,9 +37,19 @@ func getPayloadTG(id int, text string) []string {
 
 	return ss
 }
+
+func runeSub(l int, s string) string {
+	if len(s) > l {
+		s = string([]rune(s)[:l/2])
+	}
+	return s
+}
 func getPayloadTG2(id int, text string) string {
+	textLen := 4096
+	text = runeSub(textLen, text)
 	return fmt.Sprintf(`{"chat_id": %d,"text": "%s"}`, id, text)
 }
+
 func getPayloadMM(id string, text string) string {
 	textLen := 16380
 	if len(text) > textLen {
