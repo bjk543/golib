@@ -45,6 +45,10 @@ func CreateConn(user, pass, host, port, dbName string) Conn {
 		}
 	}
 
+	if err != nil {
+		return nil
+	}
+
 	if err := db.AutoMigrate(&Proxy{}); err != nil {
 		log.WithFields(log.Fields{
 			"message": err,

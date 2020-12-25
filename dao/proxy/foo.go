@@ -32,7 +32,7 @@ func HealthP(PROXY_ADDR string) (net.Conn, error) {
 		select {
 		default:
 			conn, err = net1.Dial("tcp", "ptt.cc:23")
-			fmt.Println("net.Dial", err)
+			fmt.Println("net.Dial", PROXY_ADDR, err)
 			ch <- 1
 		case <-ctx.Done():
 			fmt.Println("Canceled by timeout")
