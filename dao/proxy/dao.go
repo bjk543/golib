@@ -18,8 +18,9 @@ type DAO struct {
 type Conn interface {
 	CreateProxy(symbol string) (proxy *Proxy, err error)
 	CreateProxies(addrs []string) (err error)
-	GetProxy() (proxy *[]Proxy, err error)
-	SaveProxy(proxy []Proxy) (*[]Proxy, error)
+	GetProxy() (proxy []Proxy, err error)
+	GetProxyAll() (proxy []Proxy, err error)
+	SaveProxy(proxy []Proxy) ([]Proxy, error)
 }
 
 func CreateConn(user, pass, host, port, dbName string) Conn {
@@ -57,7 +58,6 @@ func (d *DAO) CreateProxy(addr string) (proxy *Proxy, err error) {
 		Addr:   addr,
 		Active: true,
 	}
-	// db.Clauses(clause.OnConflict{DoNothing: true}).Create(&user)
 	if err := d.db.Clauses(clause.OnConflict{DoNothing: true}).Create(&u).Error; err != nil {
 		return nil, err
 	}
@@ -70,28 +70,34 @@ func (d *DAO) CreateProxies(addrs []string) (err error) {
 		us[idx].Addr = addrs[idx]
 		us[idx].Active = true
 	}
-
-	// d.db.CreateInBatches(users, 100)
 	if err := d.db.Clauses(clause.OnConflict{DoNothing: true}).Create(&us).Error; err != nil {
 		return err
 	}
 	return nil
 }
 
-func (d *DAO) GetProxy() (proxy *[]Proxy, err error) {
+func (d *DAO) GetProxyAll() (proxy []Proxy, err error) {
 	var slice1 = []Proxy{}
-	if err := d.db.Where("active = ?", true).Find(&slice1).Error; err != nil {
+	if err := d.db.Where("active = ? ", true).Find(&slice1).Error; err != nil {
 		return nil, err
 	}
-	return &slice1, nil
+	return slice1, nil
 }
 
-func (d *DAO) SaveProxy(proxies []Proxy) (res *[]Proxy, err error) {
+func (d *DAO) GetProxy() (proxy []Proxy, err error) {
+	var slice1 = []Proxy{}
+	if err := d.db.Order("fail asc,success_ptt desc,success asc").Where("active = ? and success_ptt > 0", true).Find(&slice1).Error; err != nil {
+		return nil, err
+	}
+	return slice1, nil
+}
+
+func (d *DAO) SaveProxy(proxies []Proxy) (res []Proxy, err error) {
 	for _, v := range proxies {
 		if err := d.db.Save(&v).Error; err != nil {
 			logger.Log("ERROR", fmt.Sprintf("%s", err))
 		}
 	}
 
-	return &proxies, nil
+	return proxies, nil
 }

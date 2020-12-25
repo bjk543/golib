@@ -84,12 +84,12 @@ func (suite *UserTestSuite) TestSaveProxy() {
 
 	u, _ := suite.User.GetProxy()
 
-	for idx := range *u {
-		(*u)[idx].Success += 1
-		(*u)[idx].Fail += 2
+	for idx := range u {
+		(u)[idx].Success += 1
+		(u)[idx].Fail += 2
 	}
 
-	suite.User.SaveProxy(*u)
+	suite.User.SaveProxy(u)
 
 }
 
