@@ -2,11 +2,10 @@ package proxy
 
 import (
 	"fmt"
-	"time"
 
+	dao "github.com/bjk543/golib/dao"
 	logger "github.com/bjk543/golib/log"
 	log "github.com/sirupsen/logrus"
-	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 )
@@ -24,28 +23,11 @@ type Conn interface {
 }
 
 func CreateConn(user, pass, host, port, dbName string) Conn {
-	var db *gorm.DB
-	var err error
-	log.Printf("Connect database: %s:%s/%s %s %s\n", host, port, dbName, user, pass)
-	for i := 0; i < 5; i++ {
-		dsn := fmt.Sprintf("host=%s port=%s user=%s dbname=%s password=%s sslmode=disable TimeZone=Asia/Taipei", host, port, user, dbName, pass)
-		db, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
-		// db, err = gorm.Open("postgres", fmt.Sprintf("host=%s port=%s user=%s dbname=%s password=%s sslmode=disable", host, port, user, dbName, pass))
-		if err != nil {
-			log.WithFields(log.Fields{
-				"host":    host,
-				"port":    port,
-				"user":    user,
-				"name":    dbName,
-				"message": err.Error(),
-			}).Println("Can not connect to database")
-			time.Sleep(time.Duration(i) * time.Second)
-		} else {
-			break
-		}
-	}
 
-	if err != nil {
+	db := dao.CreateConn(user, pass, host, port, dbName)
+	log.Printf("Connect database: %s:%s/%s %s %s\n", host, port, dbName, user, pass)
+
+	if db == nil {
 		return nil
 	}
 
