@@ -9,4 +9,5 @@ type Proxy struct {
 	Fail       uint64    `gorm:"type:decimal(5);default:0"`
 	Active     bool      `gorm:"default:true"`
 	CreatedAt  time.Time `gorm:"type:timestamp;not null;default:now()"`
+	LastSuc    time.Time `gorm:"type:timestamp;"`
 }

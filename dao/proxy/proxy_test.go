@@ -1,8 +1,10 @@
 package proxy_test
 
 import (
+	"fmt"
 	"log"
 	"testing"
+	"time"
 
 	user "github.com/bjk543/golib/dao/proxy"
 
@@ -82,11 +84,13 @@ func (suite *UserTestSuite) TestSaveProxy() {
 
 	suite.User.CreateProxy("test3")
 
-	u, _ := suite.User.GetProxy()
+	u, _ := suite.User.GetProxyAll()
 
 	for idx := range u {
 		(u)[idx].Success += 1
 		(u)[idx].Fail += 2
+		(u)[idx].LastSuc = time.Now()
+		fmt.Println(u)
 	}
 
 	suite.User.SaveProxy(u)
