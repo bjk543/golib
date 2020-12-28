@@ -6,6 +6,7 @@ require (
 	github.com/go-kit/kit v0.10.0
 	github.com/jinzhu/gorm v1.9.16
 	github.com/lib/pq v1.9.0
+	github.com/line/line-bot-sdk-go v7.7.0+incompatible
 	github.com/sirupsen/logrus v1.4.2
 	github.com/stretchr/testify v1.6.1
 	gocloud.dev v0.21.0

@@ -7,16 +7,26 @@ import (
 	"os"
 	"strings"
 	"time"
+
+	"github.com/line/line-bot-sdk-go/linebot"
 )
 
 var (
 	TG_URL string
 	MM_URL string
+
+	LINE_TOKEN  string
+	LINE_SECRET string
+	LINE_USERID string
 )
 
 func init() {
 	TG_URL = os.Getenv("TG_URL")
 	MM_URL = os.Getenv("MM_URL")
+
+	LINE_TOKEN = os.Getenv("LINE_TOKEN")
+	LINE_SECRET = os.Getenv("LINE_SECRET")
+	LINE_USERID = os.Getenv("LINE_USERID")
 }
 
 func getPayloadTG(id int, text string) []string {
@@ -103,4 +113,15 @@ func PostTG2(id int, text string) error {
 func PostMM(id string, text string) error {
 	p := getPayloadMM(id, text)
 	return post(MM_URL, p)
+}
+
+func PostLine(text string) {
+	text = runeSub(2000, text)
+	bot, err := linebot.New(LINE_SECRET, LINE_TOKEN)
+	if err != nil {
+		fmt.Println("PostLine 1", err)
+	}
+	if _, err := bot.PushMessage(LINE_USERID, linebot.NewTextMessage(text)).Do(); err != nil {
+		fmt.Println("PostLine 2", err)
+	}
 }
