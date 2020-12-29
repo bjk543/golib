@@ -12,7 +12,6 @@ import (
 func CreateConn(user, pass, host, port, dbName string) *gorm.DB {
 	var db *gorm.DB
 	var err error
-	log.Printf("Connect database: %s:%s/%s %s %s\n", host, port, dbName, user, pass)
 	for i := 0; i < 5; i++ {
 		dsn := fmt.Sprintf("host=%s port=%s user=%s dbname=%s password=%s sslmode=disable TimeZone=Asia/Taipei", host, port, user, dbName, pass)
 		db, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
