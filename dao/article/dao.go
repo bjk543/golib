@@ -23,8 +23,6 @@ type Conn interface {
 func CreateConn(user, pass, host, port, dbName string) Conn {
 
 	db := dao.CreateConn(user, pass, host, port, dbName)
-	log.Printf("Connect database: %s:%s/%s %s %s\n", host, port, dbName, user, pass)
-
 	if db == nil {
 		return nil
 	}
