@@ -9,6 +9,13 @@ import (
 	"gorm.io/gorm"
 )
 
+func Close(db *gorm.DB) {
+	sql, err := db.DB()
+	if err == nil && sql != nil {
+		sql.Close()
+	}
+}
+
 func CreateConn(user, pass, host, port, dbName string) *gorm.DB {
 	var db *gorm.DB
 	var err error

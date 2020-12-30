@@ -15,6 +15,7 @@ type DAO struct {
 }
 
 type Conn interface {
+	Close()
 	CreateProxy(symbol string) (proxy *Proxy, err error)
 	CreateProxies(addrs []string) (err error)
 	GetProxy() (proxy []Proxy, err error)
@@ -35,6 +36,10 @@ func CreateConn(user, pass, host, port, dbName string) Conn {
 		}).Fatal("Can not migrate")
 	}
 	return &DAO{db: db}
+}
+
+func (d *DAO) Close() {
+	dao.Close(d.db)
 }
 
 func (d *DAO) CreateProxy(addr string) (proxy *Proxy, err error) {

@@ -15,6 +15,7 @@ type DAO struct {
 }
 
 type Conn interface {
+	Close()
 	Create(addrs []string) (err error)
 	Get() ([]Article, error)
 	Save([]Article)
@@ -33,6 +34,10 @@ func CreateConn(user, pass, host, port, dbName string) Conn {
 		}).Fatal("Can not migrate")
 	}
 	return &DAO{db: db}
+}
+
+func (d *DAO) Close() {
+	dao.Close(d.db)
 }
 
 func (d *DAO) Create(addrs []string) (err error) {
