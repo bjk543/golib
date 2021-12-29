@@ -57,6 +57,7 @@ func CreateConn(user, pass, host, port, dbName string) *gorm.DB {
 		ddb.SetConnMaxLifetime(60 * time.Second) //这个时间和lb的idle超时短就行了
 		ddb.SetMaxIdleConns(0)                   //不要使用连接池
 	}
+	db.LogMode(true)
 
 	return db
 }
