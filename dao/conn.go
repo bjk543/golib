@@ -2,7 +2,6 @@ package dao
 
 import (
 	"fmt"
-	"os"
 	"time"
 
 	log "github.com/sirupsen/logrus"
@@ -22,7 +21,7 @@ func CreateConn(user, pass, host, port, dbName string) *gorm.DB {
 	var db *gorm.DB
 	var err error
 	newLogger := logger.New(
-		log.New(os.Stdout, "\r\n", log.LstdFlags), // io writer
+		// log.New(os.Stdout, "\r\n", log.LstdFlags), // io writer
 		logger.Config{
 			SlowThreshold: time.Second, // Slow SQL threshold
 			LogLevel:      logger.Info, // Log level
