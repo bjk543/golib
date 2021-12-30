@@ -2,10 +2,11 @@ package dao
 
 import (
 	"fmt"
+	"log"
 	"os"
 	"time"
 
-	log "github.com/sirupsen/logrus"
+	log1 "github.com/sirupsen/logrus"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
@@ -32,10 +33,10 @@ func CreateConn(user, pass, host, port, dbName string) *gorm.DB {
 	)
 	for i := 0; i < 5; i++ {
 		dsn := fmt.Sprintf("host=%s port=%s user=%s dbname=%s password=%s sslmode=disable TimeZone=Asia/Taipei", host, port, user, dbName, pass)
-		db, err = gorm.Open(postgres.Open(dsn), &gorm.Config{newLogger: newLogger})
+		db, err = gorm.Open(postgres.Open(dsn), &gorm.Config{Logger: newLogger})
 		// db, err = gorm.Open("postgres", fmt.Sprintf("host=%s port=%s user=%s dbname=%s password=%s sslmode=disable", host, port, user, dbName, pass))
 		if err != nil {
-			log.WithFields(log.Fields{
+			log1.WithFields(log1.Fields{
 				"host":    host,
 				"port":    port,
 				"user":    user,
@@ -54,7 +55,7 @@ func CreateConn(user, pass, host, port, dbName string) *gorm.DB {
 
 	ddb, err := db.DB()
 	if err != nil {
-		log.WithFields(log.Fields{
+		log1.WithFields(log1.Fields{
 			"host":    host,
 			"port":    port,
 			"user":    user,
