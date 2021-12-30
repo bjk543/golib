@@ -12,6 +12,16 @@ import (
 	"gorm.io/gorm/logger"
 )
 
+var (
+	LOG_LEVEL = ""
+	LogLevel  logger.LogLevel
+)
+
+func init() {
+	LOG_LEVEL = os.Getenv("LOG_LEVEL")
+
+}
+
 func Close(db *gorm.DB) {
 	sql, err := db.DB()
 	if err == nil && sql != nil {
@@ -22,13 +32,23 @@ func Close(db *gorm.DB) {
 func CreateConn(user, pass, host, port, dbName string) *gorm.DB {
 	var db *gorm.DB
 	var err error
+	switch LOG_LEVEL {
+	case "DEBUG":
+		LogLevel = logger.Silent
+	case "INFO":
+		LogLevel = logger.Info
+	case "WARN":
+		LogLevel = logger.Warn
+	case "ERROR":
+		LogLevel = logger.Error
+	}
 	newLogger := logger.New(
 		log.New(os.Stdout, "\r\n", log.LstdFlags), // io writer
 		logger.Config{
-			SlowThreshold:             time.Second,   // Slow SQL threshold
-			LogLevel:                  logger.Silent, // Log level
-			IgnoreRecordNotFoundError: true,          // Ignore ErrRecordNotFound error for logger
-			Colorful:                  false,         // Disable color
+			SlowThreshold:             time.Second, // Slow SQL threshold
+			LogLevel:                  LogLevel, 	// Log level
+			IgnoreRecordNotFoundError: true,        // Ignore ErrRecordNotFound error for logger
+			Colorful:                  false,       // Disable color
 		},
 	)
 	for i := 0; i < 5; i++ {
