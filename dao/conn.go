@@ -46,9 +46,9 @@ func CreateConn(user, pass, host, port, dbName string) *gorm.DB {
 		log.New(os.Stdout, "\r\n", log.LstdFlags), // io writer
 		logger.Config{
 			SlowThreshold:             time.Second, // Slow SQL threshold
-			LogLevel:                  LogLevel, 	// Log level
+			LogLevel:                  LogLevel,    // Log level
 			IgnoreRecordNotFoundError: true,        // Ignore ErrRecordNotFound error for logger
-			Colorful:                  false,       // Disable color
+			Colorful:                  true,        // Disable color
 		},
 	)
 	for i := 0; i < 5; i++ {
