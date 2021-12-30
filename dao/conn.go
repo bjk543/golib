@@ -13,12 +13,12 @@ import (
 )
 
 var (
-	LOG_LEVEL = ""
+	LOG_LEVEL_DB = ""
 	LogLevel  logger.LogLevel
 )
 
 func init() {
-	LOG_LEVEL = os.Getenv("LOG_LEVEL")
+	LOG_LEVEL_DB = os.Getenv("LOG_LEVEL_DB")
 
 }
 
@@ -32,8 +32,8 @@ func Close(db *gorm.DB) {
 func CreateConn(user, pass, host, port, dbName string) *gorm.DB {
 	var db *gorm.DB
 	var err error
-	switch LOG_LEVEL {
-	case "DEBUG":
+	switch LOG_LEVEL_DB {
+	case "SILENT":
 		LogLevel = logger.Silent
 	case "INFO":
 		LogLevel = logger.Info
