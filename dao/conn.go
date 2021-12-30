@@ -14,7 +14,7 @@ import (
 
 var (
 	LOG_LEVEL_DB = ""
-	LogLevel  logger.LogLevel
+	LogLevel     logger.LogLevel
 )
 
 func init() {
@@ -41,6 +41,8 @@ func CreateConn(user, pass, host, port, dbName string) *gorm.DB {
 		LogLevel = logger.Warn
 	case "ERROR":
 		LogLevel = logger.Error
+	default:
+		LogLevel = logger.Silent
 	}
 	newLogger := logger.New(
 		log.New(os.Stdout, "\r\n", log.LstdFlags), // io writer
