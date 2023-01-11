@@ -54,7 +54,8 @@ func (d *DAO) Create(addrs []string) (err error) {
 
 func (d *DAO) Get() ([]Article, error) {
 	var res = []Article{}
-	if err := d.db.Where("done = ? and retry<5", false).Find(&res).Error; err != nil {
+	if err := d.db.Where("done = ? and retry<5", false).
+		Clauses(clause.Locking{Strength: "UPDATE"}).Find(&res).Error; err != nil {
 		return nil, err
 	}
 	return res, nil
