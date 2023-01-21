@@ -61,21 +61,21 @@ const (
 )
 
 func Log(level2, msg2 string) {
-	fmt.Print(Escape)
+	// fmt.Print(Escape)
 	switch level2 {
 	case "DEBUG":
-		fmt.Print(DebugColor)
+		// fmt.Print(DebugColor)
 		level.Debug(getInstance().logger).Log("msg", msg2)
 	case "INFO":
-		fmt.Print(InfoColor)
+		// fmt.Print(InfoColor)
 		level.Info(getInstance().logger).Log("msg", msg2)
 	case "WARN":
-		fmt.Print(WarningColor)
+		// fmt.Print(WarningColor)
 		level.Warn(getInstance().logger).Log("msg", msg2)
 	case "ERROR":
-		fmt.Print(ErrorColor)
+		// fmt.Print(ErrorColor)
 		level.Error(getInstance().logger).Log("msg", msg2)
 	}
-	fmt.Print(Escape)
-	fmt.Print(End)
+	// fmt.Print(Escape)
+	// fmt.Print(End)
 }
